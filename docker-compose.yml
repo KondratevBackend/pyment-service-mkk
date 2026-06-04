@@ -1,0 +1,72 @@
+x-logging-common: &logging-common
+  logging:
+    options:
+      max-size: "10m"
+      max-file: "3"
+services:
+  payment_api_mkk:
+    container_name: payment_api_mkk
+    build:
+      context: .
+      dockerfile: "./Dockerfile"
+    image: payment_app_mkk
+    command: [ "bash", "-c", "alembic upgrade heads && python manager.py run-api" ]
+    volumes:
+      - .:/app
+    depends_on:
+      - database_mkk
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./.env
+    restart: always
+
+  database_mkk:
+    image: postgres:15
+    container_name: database_mkk
+    volumes:
+      - payment_service_db:/var/lib/postgresql/data/
+    env_file:
+      - .env
+    ports:
+      - "${EXTERNAL_DB_PORT:-5432}:5432"
+    healthcheck:
+      test: [
+        "CMD-SHELL",
+        "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"
+      ]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+    restart: always
+    !!merge <<: *logging-common
+
+  rabbitmq_mkk:
+    image: rabbitmq:3.13.7-management
+    container_name: rabbitmq_mkk
+    hostname: rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBIT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBIT_PASSWORD}
+      - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbit log_levels [{connection,error},{default,error}] disk_free_limit 2147483648
+    volumes:
+      - payment_rabbit_data:/var/lib/rabbitmq
+    ports:
+      - 15673:15672
+      - 5673:5672
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 1s
+      timeout: 5s
+      retries: 10
+    restart: always
+
+
+volumes:
+  payment_service_db:
+  payment_rabbit_data:
+
+
+networks:
+  default:
+    name: payment_service_network
