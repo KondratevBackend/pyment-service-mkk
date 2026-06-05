@@ -34,6 +34,4 @@ class PaymentRouter:
             payload: schemes.CreatePaymentRequest,
             idempotency_key: str = fastapi.Header(..., alias="Idempotency-Key"),
         ) -> fastapi.Response:
-            return await self._service.create_payment(
-                payload=payload, idempotency_key=idempotency_key
-            )
+            return await self._service.create_payment(payload=payload, idempotency_key=idempotency_key)

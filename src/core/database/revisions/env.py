@@ -11,9 +11,7 @@ from src.core.database.core import Base
 
 config = context.config
 main_config = settings.APISettings()
-sqlalchemy_url = main_config.database.dsn.unicode_string().replace(
-    "postgresql", "postgresql+asyncpg"
-)
+sqlalchemy_url = main_config.database.dsn.unicode_string().replace("postgresql", "postgresql+asyncpg")
 config.set_main_option("sqlalchemy.url", f"{sqlalchemy_url}?async_fallback=True")
 
 if config.config_file_name is not None:
