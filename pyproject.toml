@@ -25,3 +25,40 @@ dependencies = [
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+
+[tool.black]
+line-length = 120
+target-version = ['py312']  # Целевая версия Python
+
+
+[tool.isort]
+py_version = 312
+profile = "black"  # Совместимость с Black (использует правила форматирования Black)
+line_length = 120  # Длина строки (должна совпадать с Black)
+multi_line_output = 3  # Определяет стиль вывода (3 — вертикальный вывод, предпочтительный для Black)
+include_trailing_comma = true  # Включить запятую в конце списка
+force_grid_wrap = 0  # Разбиение по сетке (0 для выключения)
+use_parentheses = true  # Использование скобок для длинных импортов
+ensure_newline_before_comments = true  # Перенос строки перед комментариями
+virtual_env = "./.venv"
+
+
+[tool.ruff]
+line-length = 120
+lint.select = [
+  "F", "E", "W", "C90", "UP",
+  "N", "YTT", "S", "BLE", "FBT",
+  "B", "A", "C4", "T20", "Q",
+  "RET", "SIM", "ARG", "ERA",
+  "PGH"
+]
+target-version = "py312"
+exclude = [
+    ".git",
+    "__pycache__",
+    "app/core/database/revisions",
+    ".venv",
+]
+lint.ignore = ["S104", "B008", "S101"]
+
