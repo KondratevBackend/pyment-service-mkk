@@ -1,9 +1,11 @@
 import fastapi
 
+from src.api.v1.payment.router import PaymentRouter
+
 
 class V1Router:
-    def __init__(self):
-        pass
+    def __init__(self, payment_router: PaymentRouter):
+        self._payment_router = payment_router
 
     @property
     def router(self) -> fastapi.APIRouter:
@@ -12,4 +14,4 @@ class V1Router:
         return router
 
     def _update_routes(self, router: fastapi.APIRouter) -> None:
-        pass
+        router.include_router(self._payment_router.router)
