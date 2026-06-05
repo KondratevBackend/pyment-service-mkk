@@ -18,6 +18,14 @@ class PaymentRepository:
 
         return result.scalar()
 
+    async def get_payment(self, payment_id: int) -> Payment | None:
+        query = sqlalchemy.select(Payment).where(Payment.id == payment_id)
+
+        async for session in self._database.get_session():
+            result = await session.execute(query)
+
+        return result.scalar_one_or_none()
+
     async def get_payment_by_idempotency_key(self, idempotency_key: str) -> Payment:
         # Для простоты примера взял фулл объект платежа
         query = sqlalchemy.select(Payment).where(Payment.idempotency_key == idempotency_key)
@@ -33,7 +41,7 @@ class PaymentRepository:
             currency=payload.currency,
             description=payload.description,
             meta_data=payload.meta_data,
-            webhook_url=str(payload.webhook_url),
+            webhook_url=str(payload.webhook_url) if payload.webhook_url else None,
             idempotency_key=idempotency_key,
             status=PaymentStatusType.PENDING,
         )

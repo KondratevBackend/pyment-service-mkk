@@ -6,6 +6,7 @@ from src.core.database.models.payment import CurrencyType, PaymentStatusType
 
 
 class PaymentResponse(pydantic.BaseModel):
+    payment_id: int = pydantic.Field(..., validation_alias="id")
     sum: int  # or pydantic.Field(..., description="...")
     currency: CurrencyType
     description: str | None = None  # or pydantic.Filed(None, description="...", )

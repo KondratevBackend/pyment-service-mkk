@@ -11,7 +11,15 @@ class PaymentService:
         self._repository = repository
 
     async def get_payment(self, payment_id: int) -> schemes.PaymentResponse:
-        pass
+        payment = await self._repository.get_payment(payment_id=payment_id)
+
+        if payment is None:
+            raise fastapi.HTTPException(
+                status_code=fastapi.status.HTTP_404_NOT_FOUND,
+                detail="Payment not found",
+            )
+
+        return schemes.PaymentResponse.model_validate(payment, from_attributes=True)
 
     async def create_payment(
         self,
