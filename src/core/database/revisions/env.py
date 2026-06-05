@@ -1,10 +1,8 @@
 import asyncio
 from logging.config import fileConfig
 
-from sqlalchemy import Connection
-from sqlalchemy import pool
-
 from alembic import context
+from sqlalchemy import Connection, pool
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from src.core import settings
@@ -13,7 +11,9 @@ from src.core.database.core import Base
 
 config = context.config
 main_config = settings.APISettings()
-sqlalchemy_url = main_config.database.dsn.unicode_string().replace("postgresql", "postgresql+asyncpg")
+sqlalchemy_url = main_config.database.dsn.unicode_string().replace(
+    "postgresql", "postgresql+asyncpg"
+)
 config.set_main_option("sqlalchemy.url", f"{sqlalchemy_url}?async_fallback=True")
 
 if config.config_file_name is not None:

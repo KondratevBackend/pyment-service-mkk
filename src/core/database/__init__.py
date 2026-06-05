@@ -1,3 +1,3 @@
-from src.core.database.core import Database, Base
+from src.core.database.core import Base, Database
 
 __all__ = (Database, Base)

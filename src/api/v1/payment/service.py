@@ -19,9 +19,17 @@ class PaymentService:
         idempotency_key: str,
     ) -> schemes.CreatePaymentResponse:
         try:
-            payment: Payment = await self._repository.insert_payment(payload=payload, idempotency_key=idempotency_key)
-        except IntegrityError:  # На продакшене такую ошибку лучше закастомить, чтобы логика ниже сразу объяснялась
+            payment: Payment = await self._repository.insert_payment(
+                payload=payload, idempotency_key=idempotency_key
+            )
+        except (
+            IntegrityError
+        ):  # На продакшене такую ошибку лучше закастомить, чтобы логика ниже сразу объяснялась
             # Можно кинуть и 409. Но при идемпотентности, как правило, не кидают, поэтому запрашиваем тот же инстанс
-            payment: Payment = await self._repository.get_payment_by_idempotency_key(idempotency_key=idempotency_key)
+            payment: Payment = await self._repository.get_payment_by_idempotency_key(
+                idempotency_key=idempotency_key
+            )
 
-        return schemes.CreatePaymentResponse.model_validate(payment, from_attributes=True)
+        return schemes.CreatePaymentResponse.model_validate(
+            payment, from_attributes=True
+        )

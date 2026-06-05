@@ -9,8 +9,8 @@ Create Date: 2026-06-04 23:57:29.829810
 
 from typing import Sequence  # noqa: UP035
 
-from alembic import op
 import sqlalchemy as sa
+from alembic import op
 
 # revision identifiers, used by Alembic.
 revision: str = "1bc767863f3f"
@@ -32,9 +32,7 @@ def upgrade() -> None:
         sa.Column("meta_data", sa.JSON(), nullable=True),
         sa.Column(
             "status",
-            sa.Enum(
-                "PENDING", "SUCCEEDED", "FAILED", name="paymentstatustype"
-            ),
+            sa.Enum("PENDING", "SUCCEEDED", "FAILED", name="paymentstatustype"),
             nullable=False,
         ),
         sa.Column("webhook_url", sa.String(length=256), nullable=True),
