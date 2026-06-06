@@ -26,7 +26,9 @@ def run_api():
 
 @manager.command()
 def run_consumer():
-    pass
+    from src.consumer import main
+
+    uvicorn.run(main.application, use_colors=True)
 
 
 if __name__ == "__main__":

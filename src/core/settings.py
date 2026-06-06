@@ -23,6 +23,15 @@ class DatabaseSettings(pydantic.BaseModel):
     engine_pool_timeout: int = pydantic.Field(default=30)
 
 
+class BrokerSettings(pydantic.BaseModel):
+    dsn: pydantic.AmqpDsn
+
+
 class APISettings(BaseSettings):
     server: ServerSettings
     database: DatabaseSettings
+
+
+class ConsumerSettings(BaseSettings):
+    database: DatabaseSettings
+    broker: BrokerSettings

@@ -9,7 +9,7 @@ from src.core.database import Database
 from src.core.settings import APISettings
 
 
-def resolve_resources(config: APISettings) -> None:
+def resolve_resources(config: APISettings) -> punq.Container:
     container = punq.Container()
 
     container.register(

@@ -41,6 +41,25 @@ services:
     restart: always
     !!merge <<: *logging-common
 
+  consumer_mkk:
+    container_name: consumer_mkk
+    build:
+      context: .
+      dockerfile: "./Dockerfile"
+    image: payment_app_mkk
+    command: [ "bash", "-c", "python manager.py run-consumer" ]
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      rabbitmq_mkk:
+        condition: service_healthy
+    ports:
+      - 8090:8090
+    restart: always
+    !!merge <<: *logging-common
+
   rabbitmq_mkk:
     image: rabbitmq:3.13.7-management
     container_name: rabbitmq_mkk
