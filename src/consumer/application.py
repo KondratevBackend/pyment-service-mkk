@@ -32,9 +32,7 @@ class ConsumerApplication:
             after_startup=[self.after_startup_hook],
             after_shutdown=[self.after_shutdown_hook],
             on_shutdown=[self.shutdown_hook],
-        ).as_asgi(
-            asyncapi_path="/docs/asyncapi"
-        )
+        ).as_asgi(asyncapi_path="/docs/asyncapi")
         self._set_up()
 
         return self._app

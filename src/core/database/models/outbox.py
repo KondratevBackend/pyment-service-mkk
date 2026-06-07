@@ -1,6 +1,6 @@
 import enum
 
-from sqlalchemy import orm, JSON, Enum
+from sqlalchemy import JSON, Enum, orm
 
 from src.core.database import Base, mixins
 

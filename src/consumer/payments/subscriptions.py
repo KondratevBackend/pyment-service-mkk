@@ -1,4 +1,4 @@
-from faststream.rabbit import RabbitRouter, RabbitQueue
+from faststream.rabbit import RabbitQueue, RabbitRouter
 
 from src.consumer.payments import exchanges
 from src.consumer.payments.service import PaymentsService
@@ -23,7 +23,7 @@ class PaymentsSubscriptions:
                 arguments={
                     "x-dead-letter-exchange": consts.DEAD_LETTER_EXCHANGE,
                     "x-dead-letter-routing-key": consts.DEAD_LETTER_ROUTING_KEY,
-                }
+                },
             ),
             exchange=exchanges.payment_exchange,
         )
