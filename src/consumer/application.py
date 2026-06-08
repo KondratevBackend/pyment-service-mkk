@@ -48,6 +48,7 @@ class ConsumerApplication:
     async def after_startup_hook(self):
         logger.info("after_startup called")
         await self._declare_dead_letter()
+        await self._payment_subscriptions.declare(broker=self._broker)
 
     async def shutdown_hook(self):
         logger.info("on_shutdown called")

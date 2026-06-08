@@ -3,8 +3,9 @@ import logging
 import random
 import aiohttp
 
-from faststream.rabbit import RabbitMessage
+from faststream.rabbit import RabbitMessage, RabbitBroker
 
+from src.consumer.payments import exchanges
 from src.consumer.payments.repository import PaymentsRepository
 from src.consumer.payments.schemes import Payment
 from src.core import consts
@@ -17,7 +18,7 @@ class PaymentsService:
     def __init__(self, repository: PaymentsRepository):
         self._repository = repository
 
-    async def process_payment(self, payment: Payment, msg: RabbitMessage) -> None:
+    async def process_payment(self, payment: Payment, msg: RabbitMessage, broker: RabbitBroker) -> None:
         if await self._repository.exists_duplicate_payment_by_idempotency_key(idempotency_key=payment.idempotency_key):
             logger.info("Duplicate payment")
             return
@@ -27,18 +28,41 @@ class PaymentsService:
         if random.random() < 0:
             await self.__send_webhook_notification(payment=payment)
             await self._repository.update_payment_status(payment_id=payment.id, status=PaymentStatusType.SUCCEEDED)
-            await msg.ack()  # Он конечно и сам с этим справился бы, но я решил помочь ;)
         else:
-            delivery_count = msg.headers.get("x-delivery-count")
-            logger.info(f"BAD CASE! Attempts: {delivery_count}")
-            if delivery_count == consts.DELIVERY_LIMIT:
-                await self._repository.update_payment_status(payment_id=payment.id, status=PaymentStatusType.FAILED)
+            retry_count = msg.headers.get("x-retry-count", 0) + 1
+            logger.info(f"BAD CASE! Attempts: {retry_count}")
 
-            await msg.nack(requeue=True)
+            retry_limit = 4
+            if retry_count == retry_limit:
+                await broker.publish(
+                    message=payment,
+                    exchange=consts.DEAD_LETTER_EXCHANGE,
+                    queue=consts.DEAD_LETTER_QUEUE,
+                    routing_key=consts.DEAD_LETTER_ROUTING_KEY,
+                    persist=True,
+                    headers={
+                        **msg.headers,
+                        "x-retry-count": retry_count,
+                    },
+                )
+                await self._repository.update_payment_status(payment_id=payment.id, status=PaymentStatusType.FAILED)
+                return
+
+            await broker.publish(
+                message=payment,
+                exchange=exchanges.payment_exchange,
+                queue=f"payments.retry.{retry_count}",
+                persist=True,
+                headers={
+                    **msg.headers,
+                    "x-retry-count": retry_count,
+                },
+            )
+            await msg.nack(requeue=False)
 
     @staticmethod
     async def __send_webhook_notification(payment: Payment) -> None:
-        # По хорошему для этого должен быть отдельный интерфейс для управления вебхуком, но не будем усложнять
+        # По хорошему для этого должен быть отдельный интерфейс для управления вебхуком
         if not payment.webhook_url:
             return
 
