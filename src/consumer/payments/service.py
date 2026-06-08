@@ -25,7 +25,7 @@ class PaymentsService:
 
         await asyncio.sleep(random.randint(2, 5))  # Бурная деятельность!
 
-        if random.random() < 0:
+        if random.random() < 0.9:
             await self.__send_webhook_notification(payment=payment)
             await self._repository.update_payment_status(payment_id=payment.id, status=PaymentStatusType.SUCCEEDED)
         else:
@@ -71,7 +71,7 @@ class PaymentsService:
             "amount": payment.sum,
             "currency": payment.currency,
             "description": payment.description,
-            "idempotency_key": payment.idempotency_key,
+            "idempotency_key": str(payment.idempotency_key),
         }
 
         timeout = aiohttp.ClientTimeout(total=5, connect=2)
