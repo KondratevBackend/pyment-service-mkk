@@ -1,9 +1,9 @@
 import asyncio
 import logging
 import random
-import aiohttp
 
-from faststream.rabbit import RabbitMessage, RabbitBroker
+import aiohttp
+from faststream.rabbit import RabbitBroker, RabbitMessage
 
 from src.consumer.payments import exchanges
 from src.consumer.payments.repository import PaymentsRepository

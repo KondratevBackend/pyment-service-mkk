@@ -1,10 +1,10 @@
 import logging
 
 import faststream
-from faststream.rabbit import RabbitExchange, RabbitQueue, RabbitBroker
+from faststream.rabbit import RabbitBroker, RabbitExchange, RabbitQueue
 
 from src.consumer.payments.subscriptions import PaymentsSubscriptions
-from src.core import consts, brokers
+from src.core import brokers, consts
 from src.core.settings import ConsumerSettings
 
 logger = logging.getLogger(__name__)

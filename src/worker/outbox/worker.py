@@ -2,7 +2,7 @@ import logging
 
 from taskiq import TaskiqDepends
 
-from src.worker.main import resources, broker
+from src.worker.main import broker, resources
 from src.worker.outbox.service import OutboxWorkerService
 
 logger = logging.getLogger(__name__)

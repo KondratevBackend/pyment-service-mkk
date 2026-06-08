@@ -11,8 +11,7 @@ class PaymentsRepository:
 
     async def exists_duplicate_payment_by_idempotency_key(self, idempotency_key: str) -> bool:
         query = sqlalchemy.select(
-            sqlalchemy.exists()
-            .where(
+            sqlalchemy.exists().where(
                 Payment.idempotency_key == idempotency_key,
                 Payment.status != PaymentStatusType.PENDING,
             )

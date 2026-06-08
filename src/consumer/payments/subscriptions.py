@@ -1,5 +1,5 @@
 from faststream import Context
-from faststream.rabbit import RabbitQueue, RabbitRouter, RabbitMessage, QueueType, RabbitBroker, RabbitExchange
+from faststream.rabbit import QueueType, RabbitBroker, RabbitExchange, RabbitMessage, RabbitQueue, RabbitRouter
 
 from src.consumer.payments import exchanges
 from src.consumer.payments.schemes import Payment
@@ -24,6 +24,8 @@ class PaymentsSubscriptions:
 
     @staticmethod
     async def declare(broker: RabbitBroker) -> None:
+        # делей реализован через DLX + TTL с целью показать работу с exchanges, но в реальности можно взять
+        # rabbitmq_delayed_message_exchange или реализовать отдельный интерфейс для retry через DLX TTL
         retry_1 = await broker.declare_queue(
             RabbitQueue(
                 name="payments.retry.1",

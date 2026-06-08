@@ -1,10 +1,10 @@
 import logging
 
+from aio_pika import ExchangeType
 from faststream.rabbit import RabbitBroker
 from taskiq import TaskiqEvents, TaskiqScheduler, TaskiqState
 from taskiq.schedule_sources import LabelScheduleSource
-from taskiq_aio_pika import AioPikaBroker, Queue, QueueType, Exchange
-from aio_pika import ExchangeType
+from taskiq_aio_pika import AioPikaBroker, Exchange, Queue, QueueType
 
 from src.core.brokers import BrokerRabbitMQ
 from src.core.settings import WorkerSettings
@@ -42,7 +42,7 @@ class WorkerApplication:
                     max_priority=10,
                     routing_key="taskiq_queue",
                 )
-            ]
+            ],
         )
         self._broker = _broker
 

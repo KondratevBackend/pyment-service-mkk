@@ -1,8 +1,8 @@
 import punq
 
 from src.core.brokers import BrokerRabbitMQ
-from src.core.settings import WorkerSettings
 from src.core.database import Database
+from src.core.settings import WorkerSettings
 from src.worker.outbox.repository import OutboxWorkerRepository
 from src.worker.outbox.service import OutboxWorkerService
 

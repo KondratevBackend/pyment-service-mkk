@@ -2,7 +2,7 @@ import sqlalchemy
 
 from src.api.v1.payment import schemes
 from src.core.database import Database
-from src.core.database.models import Payment, Outbox
+from src.core.database.models import Outbox, Payment
 from src.core.database.models.payment import PaymentStatusType
 
 

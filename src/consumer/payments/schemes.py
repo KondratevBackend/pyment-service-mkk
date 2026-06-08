@@ -12,4 +12,3 @@ class Payment(pydantic.BaseModel):
     status: PaymentStatusType
     webhook_url: pydantic.HttpUrl | None = None
     idempotency_key: pydantic.UUID4
-
