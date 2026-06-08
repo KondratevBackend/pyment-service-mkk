@@ -22,7 +22,6 @@ class OutboxWorkerService:
             try:
                 await self._publisher.publish(
                     message=payload,
-                    message_id=payload["idempotency_key"],
                     queue="payments.new",  # todo: Очередь берем из БД
                     exchange="payments",  # todo: Обменник берем из БД
                     persist=True,

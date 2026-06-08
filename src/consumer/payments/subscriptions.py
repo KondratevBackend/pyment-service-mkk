@@ -1,6 +1,7 @@
-from faststream.rabbit import RabbitQueue, RabbitRouter
+from faststream.rabbit import RabbitQueue, RabbitRouter, RabbitMessage, QueueType
 
 from src.consumer.payments import exchanges
+from src.consumer.payments.schemes import Payment
 from src.consumer.payments.service import PaymentsService
 from src.core import consts
 
@@ -20,12 +21,14 @@ class PaymentsSubscriptions:
             queue=RabbitQueue(
                 name="new",
                 durable=True,
+                queue_type=QueueType.QUORUM,
                 arguments={
                     "x-dead-letter-exchange": consts.DEAD_LETTER_EXCHANGE,
                     "x-dead-letter-routing-key": consts.DEAD_LETTER_ROUTING_KEY,
+                    "x-delivery-limit": consts.DELIVERY_LIMIT,
                 },
             ),
             exchange=exchanges.payment_exchange,
         )
-        async def payments_new_handler():
-            await self._service.process_payment()
+        async def payments_new_handler(payment: Payment, msg: RabbitMessage):
+            await self._service.process_payment(payment=payment, msg=msg)
