@@ -19,7 +19,7 @@ class PaymentStatusType(enum.StrEnum):
     FAILED = "failed"
 
 
-class Payment(Base, mixins.PrimaryKeyMixin, mixins.TimestampMixin):
+class Payment(Base, mixins.PrimaryKeyMixin, mixins.TimestampMixin, mixins.SerializeMixin):
     sum: orm.Mapped[Decimal] = orm.mapped_column(Numeric(precision=10, scale=2), nullable=False)
     currency: orm.Mapped[CurrencyType] = orm.mapped_column(Enum(CurrencyType), nullable=False)
     description: orm.Mapped[str] = orm.mapped_column(String, nullable=True)

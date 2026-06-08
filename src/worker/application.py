@@ -1,17 +1,20 @@
 import logging
 
+from faststream.rabbit import RabbitBroker
 from taskiq import TaskiqEvents, TaskiqScheduler, TaskiqState
 from taskiq.schedule_sources import LabelScheduleSource
 from taskiq_aio_pika import AioPikaBroker, Queue, QueueType, Exchange
 from aio_pika import ExchangeType
 
+from src.core.brokers import BrokerRabbitMQ
 from src.core.settings import WorkerSettings
 
 logger = logging.getLogger(__name__)
 
 
 class WorkerApplication:
-    def __init__(self, config: WorkerSettings):
+    def __init__(self, rabbit: BrokerRabbitMQ, config: WorkerSettings):
+        self._faststream_broker: RabbitBroker = rabbit.broker
         self._config = config
         self._broker = None
         self._scheduler = None
@@ -63,8 +66,10 @@ class WorkerApplication:
     def _register_events(self, broker) -> None:
         @broker.on_event(TaskiqEvents.WORKER_STARTUP)
         async def startup(state: TaskiqState) -> None:
+            await self._faststream_broker.start()
             logger.info("Worker startup")
 
         @broker.on_event(TaskiqEvents.WORKER_SHUTDOWN)
         async def shutdown(state: TaskiqState) -> None:
+            await self._faststream_broker.stop()
             logger.info("Worker shutdown")
