@@ -33,7 +33,7 @@ class PaymentsService:
             logger.info(f"BAD CASE! Attempts: {retry_count}")
 
             retry_limit = 4
-            if retry_count == retry_limit:
+            if retry_count >= retry_limit:
                 await broker.publish(
                     message=payment,
                     exchange=consts.DEAD_LETTER_EXCHANGE,
