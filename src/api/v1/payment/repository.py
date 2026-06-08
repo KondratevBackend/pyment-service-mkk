@@ -48,6 +48,7 @@ class PaymentRepository:
                     status=PaymentStatusType.PENDING,
                 )
                 session.add(instance)
+                await session.flush()
 
                 event = Outbox(payload=instance.to_dict())
                 session.add(event)
