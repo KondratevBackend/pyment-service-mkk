@@ -35,3 +35,8 @@ class APISettings(BaseSettings):
 class ConsumerSettings(BaseSettings):
     database: DatabaseSettings
     broker: BrokerSettings
+
+
+class WorkerSettings(BaseSettings):
+    database: DatabaseSettings
+    broker: BrokerSettings

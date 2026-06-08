@@ -71,14 +71,56 @@ services:
     volumes:
       - payment_rabbit_data:/var/lib/rabbitmq
     ports:
-      - 15673:15672
-      - 5673:5672
+      - 15672:15672
+      - 5672:5672
     healthcheck:
-      test: rabbitmq-diagnostics -q ping
-      interval: 1s
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      interval: 3s
       timeout: 5s
       retries: 10
     restart: always
+
+  worker_mkk:
+    container_name: worker_mkk
+    build:
+      context: .
+      dockerfile: "./Dockerfile"
+    image: payment_app_mkk
+    command: [
+      "bash",
+      "-c",
+      "taskiq worker src.worker.main:broker -fsd -tp **/tasks.py -tp **/*_worker.py -tp **/worker.py --workers 1"
+    ]
+    volumes:
+      - .:/app
+    expose:
+      - 9101
+    depends_on:
+      - database_mkk
+      - rabbitmq_mkk
+    env_file:
+      - .env
+    !!merge <<: *logging-common
+
+  scheduler_mkk:
+    container_name: scheduler_mkk
+    build:
+      context: .
+      dockerfile: "./Dockerfile"
+    image: payment_app_mkk
+    command: [
+      "bash",
+      "-c",
+      "taskiq scheduler src.worker.main:scheduler -fsd -tp **/*_worker.py -tp **/worker.py"
+    ]
+    volumes:
+      - .:/app
+    expose:
+      - 9102
+    depends_on:
+      rabbitmq_mkk:
+        condition: service_healthy
+    !!merge <<: *logging-common
 
 
 volumes:
