@@ -3,6 +3,7 @@ import punq
 from src.consumer.payments.repository import PaymentsRepository
 from src.consumer.payments.service import PaymentsService
 from src.consumer.payments.subscriptions import PaymentsSubscriptions
+from src.core.brokers import BrokerRabbitMQ
 from src.core.database import Database
 from src.core.settings import ConsumerSettings
 
@@ -15,6 +16,12 @@ def resolve_resources(config: ConsumerSettings) -> punq.Container:
         factory=Database,
         scope=punq.Scope.singleton,
         config=config.database,
+    )
+    container.register(
+        service=BrokerRabbitMQ,
+        factory=BrokerRabbitMQ,
+        scope=punq.Scope.singleton,
+        config=config.broker,
     )
     container.register(
         service=PaymentsSubscriptions,
