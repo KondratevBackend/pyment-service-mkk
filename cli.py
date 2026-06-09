@@ -3,12 +3,12 @@ import logging
 import typer
 import uvicorn
 
-manager = typer.Typer()
+app = typer.Typer()
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 
-@manager.command()
+@app.command()
 def run_api():
     from src.api import main
 
@@ -24,7 +24,7 @@ def run_api():
     )
 
 
-@manager.command()
+@app.command()
 def run_consumer():
     from src.consumer import main
 
@@ -32,4 +32,4 @@ def run_consumer():
 
 
 if __name__ == "__main__":
-    manager()
+    app()

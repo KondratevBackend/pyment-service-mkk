@@ -10,7 +10,7 @@ services:
       context: .
       dockerfile: "./Dockerfile"
     image: payment_app_mkk
-    command: [ "bash", "-c", "alembic upgrade heads && python manager.py run-api" ]
+    command: [ "bash", "-c", "alembic upgrade heads && python cli.py run-api" ]
     volumes:
       - .:/app
     depends_on:
@@ -47,7 +47,7 @@ services:
       context: .
       dockerfile: "./Dockerfile"
     image: payment_app_mkk
-    command: [ "bash", "-c", "python manager.py run-consumer" ]
+    command: [ "bash", "-c", "python cli.py run-consumer" ]
     volumes:
       - .:/app
     env_file:
