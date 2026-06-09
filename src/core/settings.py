@@ -8,6 +8,10 @@ class BaseSettings(pydantic_settings.BaseSettings):
     )
 
 
+class SystemSettings(BaseSettings):
+    x_api_key: str = pydantic.Field(default="salt-api-key")
+
+
 class ServerSettings(pydantic.BaseModel):
     port: int = pydantic.Field(default=8000)
     workers: pydantic.PositiveInt = pydantic.Field(default=1)
@@ -28,6 +32,7 @@ class BrokerSettings(pydantic.BaseModel):
 
 
 class APISettings(BaseSettings):
+    system: SystemSettings
     server: ServerSettings
     database: DatabaseSettings
 

@@ -25,6 +25,7 @@ curl -X POST \
   'http://localhost:8000/src/v1/payments' \
   -H 'accept: application/json' \
   -H 'Idempotency-Key: 78ea4b69-f280-4afb-810b-67dbdbfdf994' \
+  -H 'X-API-KEY: salt-api-key' \
   -H 'Content-Type: application/json' \
   -d '{
     "sum": 10000,
@@ -39,6 +40,7 @@ curl -X POST \
   'http://localhost:8000/src/v1/payments' \
   -H 'accept: application/json' \
   -H 'Idempotency-Key: ac376574-7d46-4e70-8b64-2c232fd9f598' \
+  -H 'X-API-KEY: salt-api-key' \
   -H 'Content-Type: application/json' \
   -d '{
     "sum": 500,
@@ -55,6 +57,7 @@ curl -X POST \
   'http://localhost:8000/src/v1/payments' \
   -H 'accept: application/json' \
   -H 'Idempotency-Key: 90bfd5d0-8590-45b3-95f3-7237e4c1fe72' \
+  -H 'X-API-KEY: salt-api-key' \
   -H 'Content-Type: application/json' \
   -d '{
     "sum": 5000,
@@ -76,6 +79,7 @@ curl -X POST \
   'http://localhost:8000/src/v1/payments' \
   -H 'accept: application/json' \
   -H 'Idempotency-Key: a8d20b8e-7894-4c8e-8898-97f9ddf8ad87' \
+  -H 'X-API-KEY: salt-api-key' \
   -H 'Content-Type: application/json' \
   -d '{
     "sum": 150000,

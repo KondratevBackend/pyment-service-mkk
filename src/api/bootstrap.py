@@ -1,6 +1,7 @@
 import punq
 
 from src.api.health_checks.router import HealthChecksRouter
+from src.api.v1.dependencies import V1Dependencies
 from src.api.v1.payment.repository import PaymentRepository
 from src.api.v1.payment.router import PaymentRouter
 from src.api.v1.payment.service import PaymentService
@@ -22,6 +23,12 @@ def resolve_resources(config: APISettings) -> punq.Container:
         service=HealthChecksRouter,
         factory=HealthChecksRouter,
         scope=punq.Scope.singleton,
+    )
+    container.register(
+        service=V1Dependencies,
+        factory=V1Dependencies,
+        scope=punq.Scope.singleton,
+        config=config,
     )
     container.register(
         service=V1Router,
