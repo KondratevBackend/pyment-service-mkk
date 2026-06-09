@@ -32,7 +32,7 @@ class Application:
             title="Payment Service MKK",
             version="1.0.0",
             lifespan=lifespan,
-            root_path="/src",
+            root_path="",
             openapi_url="/opnapi.json",
         )
         self._set_up(server=server)
