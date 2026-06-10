@@ -16,6 +16,7 @@ docker compose up -d --build
 ```
 http://localhost:8000
 ```
+SWAGGER: http://localhost:8000/docs
 
 ## Тестируем!
 ### Минимальный платеж
